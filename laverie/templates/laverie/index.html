@@ -1,0 +1,69 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<h2>Nombre de machines libres : {{ nb_machines_libres }} </h2>
+<h2>Nombre de sèche-linges libres :  {{ nb_seche_linges_libres }} </h2>
+
+<ul>
+    {% for appareil in appareils %}
+        <li>
+            <h3>{{ appareil }}</h3>
+            {% if appareil.est_libre %}
+                Libre
+                <button onclick="lancer_decompte({{ appareil.id }})">Lancer le décompte</button>
+            {% else %}
+                Temps restant : {{ appareil.temps_restant }}
+            {% endif %}
+
+            <button onclick="apparition_formulaire({{ appareil.id }})">Corriger</button>
+            <div id="corriger_{{ appareil.id }}" style="display: none">
+                <input id="valeur_{{ appareil.id }}" type="number" min="0" max="{{ appareil.temps_max }}"/>
+                <button onclick="corriger_compteur({{ appareil.id }})">Valider</button>
+            </div>
+            {% if appareil.interesses == 1 %}
+            <div>
+                1 personne intéressée
+            </div>
+            {% elif appareil.interesses > 1 %}
+                {{ appareil.interesses }} personnes intéressées
+            {% endif %}
+
+            <button onclick="interesse({{ appareil.id }})">Intéressé</button>
+            {% if appareil.interesses != 0 %}
+        <button onclick="plus_interesse({{ appareil.id }})">Plus intéressé</button>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+
+<script>
+    function lancer_decompte(id) {
+        $.get("lancer_decompte/" + id).done(function(){
+            location.reload();
+        });
+    }
+    function apparition_formulaire(id) {
+        var tag = '#corriger_' + id;
+        $(tag).show();
+    }
+    function corriger_compteur(id) {
+        var tag = '#valeur_' + id;
+        var valeur = $(tag).val();
+        $.get("corriger_decompte/" + id + "/" + valeur).done(function(){
+            location.reload();
+        });
+    }
+    function interesse(id) {
+        $.get("interesse/" + id).done(function(){
+            location.reload();
+        });
+    }
+    function plus_interesse(id) {
+        $.get("plus_interesse/" + id).done(function(){
+            location.reload();
+        });
+    }
+    function refresh() {
+        $('body').load('')
+    }
+    setTimeout("refresh()",10000);
+</script>

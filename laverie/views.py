@@ -30,9 +30,13 @@ def lancer_decompte(request, id):
 
 
 def corriger_decompte(request, id, valeur):
+    print("Correction de " + str(id))
     appareil = Appareil.objects.get(id=id)
+    print("Heure de fin valait " + str(appareil.heure_fin))
     appareil.heure_fin = timezone.now() + timezone.timedelta(minutes=int(valeur))
+    appareil.save()
     appareil.actualiser()
+    print("Heure de fin vaut maintenant " + str(appareil.heure_fin))
     return index(request)
 
 

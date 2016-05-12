@@ -5,7 +5,7 @@ from django.db import models
 class Appareil(models.Model):
     duree = models.IntegerField(default=50)
     heure_fin = models.DateTimeField(default=timezone.now)
-    temps_restant = models.DurationField(default=timezone.timedelta())
+    temps_restant = models.DurationField(default=timezone.timedelta(),null=True)
     interesses = models.IntegerField(default=0)
     libre = models.BooleanField(default=True)
     TYPES = (
@@ -15,7 +15,11 @@ class Appareil(models.Model):
     type = models.CharField(max_length=20, choices=TYPES, default='machine')
 
     def __str__(self):
-        return "%s %s" %(self.type, self.id)
+        if self.type == 'machine':
+            type = 'Machine à laver'
+        else:
+            type = 'Sèche linger'
+        return type + " " + str(self.id)
 
     def add_interesse(self):
         self.interesses += 1
@@ -26,14 +30,17 @@ class Appareil(models.Model):
         self.save()
 
     def actualiser(self):
-        if not self.libre:
-            temps_restant = self.temps_restant = self.heure_fin - timezone.now()
+        temps_restant = self.temps_restant = self.heure_fin - timezone.now()
+        if self.libre:
+            if temps_restant.days >= 0:
+                self.libre = False
+        else:
             if temps_restant.days >= 0:
                 self.temps_restant = temps_restant
             else:
                 self.libre = True
                 self.temps_restant = timezone.timedelta()
-            self.save()
+        self.save()
 
     def get_minutes_restantes(self):
         return (60+self.temps_restant.seconds)//60

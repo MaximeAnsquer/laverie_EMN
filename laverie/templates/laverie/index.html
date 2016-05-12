@@ -1,50 +1,109 @@
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Super laverie trop cool</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+</head>
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+<body>
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<div class="container">
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <div class="col-xs-12">
 
-<h1>Super gestionnaire de laverie trop cool</h1>
+        <h1>Super gestionnaire de laverie trop cool</h1>
 
-<h2>Nombre de machines libres : {{ nb_machines_libres }} </h2>
-<h2>Nombre de sèche-linges libres :  {{ nb_seche_linges_libres }} </h2>
+        <h2>Nombre de machines libres : {{ nb_machines_libres }} </h2>
+        <h2>Nombre de sèche-linges libres :  {{ nb_seche_linges_libres }} </h2>
 
-<ul>
-    {% for appareil in appareils %}
-        <li>
-            <h3>{{ appareil }}</h3>
-            {% if appareil.libre %}
-                Libre
-                <button onclick="lancer_decompte({{ appareil.id }})">Lancer le décompte</button>
-            {% else %}
-                Temps restant : {{ appareil.get_minutes_restantes }} minutes
-            {% endif %}
+        <table class="table table-striped">
+            <tbody>
+            {% for appareil in appareils %}
+                <tr>
+                    <td>{{ appareil }}</td>
+                    <td>
+                        {% if appareil.libre %}
+                            <p class="text-success">Libre</p>
+                        {% else %}
+                            <p class="text-danger">
+                                Temps restant : {{ appareil.get_minutes_restantes }} minutes
+                            </p>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if appareil.interesses == 1 %}
+                            <div>
+                                1 intéressé
+                            </div>
+                        {% elif appareil.interesses > 1 %}
+                            {{ appareil.interesses }} intéressés
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button onclick="interesse({{ appareil.id }})">Intéressé</button>
+                    </td>
+                    <td>
+                        {% if appareil.interesses != 0 %}
+                            <button onclick="plus_interesse({{ appareil.id }})">Plus intéressé</button>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button onclick="apparition_formulaire({{ appareil.id }})">Corriger</button>
+                        <div id="corriger_{{ appareil.id }}" style="display: none">
+                            <input id="valeur_{{ appareil.id }}" type="number" min="0" max="{{ appareil.duree }}"/>
+                            <button onclick="corriger_compteur({{ appareil.id }})">Valider</button>
+                        </div>
 
-            <button onclick="apparition_formulaire({{ appareil.id }})">Corriger</button>
-            <div id="corriger_{{ appareil.id }}" style="display: none">
-                <input id="valeur_{{ appareil.id }}" type="number" min="0" max="{{ appareil.duree }}"/>
-                <button onclick="corriger_compteur({{ appareil.id }})">Valider</button>
-            </div>
-            {% if appareil.interesses == 1 %}
-            <div>
-                1 personne intéressée
-            </div>
-            {% elif appareil.interesses > 1 %}
-                {{ appareil.interesses }} personnes intéressées
-            {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-            <button onclick="interesse({{ appareil.id }})">Intéressé</button>
-            {% if appareil.interesses != 0 %}
-        <button onclick="plus_interesse({{ appareil.id }})">Plus intéressé</button>
-            {% endif %}
-        </li>
-    {% endfor %}
-</ul>
+        <dl>
+            {% for appareil in appareils %}
+                <dt>
+                <h3>{{ appareil }}</h3>
+                {% if appareil.libre %}
+                    <p class="text-success">
+                        Libre
+                    </p>
+                    <button onclick="lancer_decompte({{ appareil.id }})">Lancer le décompte</button>
+                {% else %}
+                    <p class="text-danger">
+                        Temps restant : {{ appareil.get_minutes_restantes }} minutes
+                    </p>
+                {% endif %}
+
+                <button onclick="apparition_formulaire({{ appareil.id }})">Corriger</button>
+                <div id="corriger_{{ appareil.id }}" style="display: none">
+                    <input id="valeur_{{ appareil.id }}" type="number" min="0" max="{{ appareil.duree }}"/>
+                    <button onclick="corriger_compteur({{ appareil.id }})">Valider</button>
+                </div>
+                {% if appareil.interesses == 1 %}
+                    <div>
+                        1 personne intéressée
+                    </div>
+                {% elif appareil.interesses > 1 %}
+                    {{ appareil.interesses }} personnes intéressées
+                {% endif %}
+
+                <button onclick="interesse({{ appareil.id }})">Intéressé</button>
+                {% if appareil.interesses != 0 %}
+                    <button onclick="plus_interesse({{ appareil.id }})">Plus intéressé</button>
+                {% endif %}
+                </dt>
+            {% endfor %}
+        </dl>
+    </div>
+</div>
+
+</body>
 
 <script>
     function lancer_decompte(id) {
@@ -78,3 +137,5 @@
     }
     setTimeout("refresh()",61000);
 </script>
+
+</html>

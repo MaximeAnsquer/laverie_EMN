@@ -19,9 +19,11 @@ class Appareil(models.Model):
 
     def add_interesse(self):
         self.interesses += 1
+        self.save()
 
     def remove_interesse(self):
         self.interesses -= 1
+        self.save()
 
     def actualiser(self):
         if not self.libre:

@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django.shortcuts import render
-from laverie.models import Appareil
+from laverie.models import Appareil, Utilisation
 
 
 def index(request):
@@ -16,6 +16,8 @@ def index(request):
 def lancer_decompte(request, id):
     print("Lancement du decompte " + str(id))
     appareil = Appareil.objects.get(id=id)
+    nouvelle_utilisation = Utilisation(appareil=appareil)
+    nouvelle_utilisation.save()
     print("Heure actuelle : " + str(timezone.now()))
     print("Duree de l'appareil : " + str(appareil.duree))
     appareil.heure_fin = timezone.now() + timezone.timedelta(minutes=appareil.duree)

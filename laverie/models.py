@@ -36,7 +36,16 @@ class Appareil(models.Model):
             self.save()
 
     def get_minutes_restantes(self):
-        return (10+self.temps_restant.seconds)//60
+        return (60+self.temps_restant.seconds)//60
+
+
+class Utilisation(models.Model):
+    appareil = models.ForeignKey(Appareil, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return str(self.date)
+
 
 
 

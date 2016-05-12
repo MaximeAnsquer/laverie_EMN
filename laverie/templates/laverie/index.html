@@ -62,7 +62,8 @@
                         {% endif %}
                     </td>
                     <td>
-                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#popUpWindow">Corriger</button>
+                        <button type="button" onclick="demander_valeur({{ appareil.id }})" class="btn btn-warning" >Corriger</button>
+                        <!-- <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#popUpWindow">Corriger</button> -->
 
                         <div class="modal modal fade" id="popUpWindow" >
                             <div class="modal-dialog" style="width: 100%; height: 100%;  margin: 0;  padding: 0;">
@@ -79,6 +80,7 @@
                                         <form role="form">
                                             <div class="form-group">
                                                 <input id="valeur_{{ appareil.id }}"
+                                                       autofocus
                                                        type="number" min="0" max="{{ appareil.duree }}"
                                                        placeholder="Temps restant (en minutes)"
                                                        style="width:100%; height: 300px">
@@ -160,6 +162,12 @@
     function corriger_compteur(id) {
         var tag = '#valeur_' + id;
         var valeur = $(tag).val();
+        $.get("corriger_decompte/" + id + "/" + valeur).done(function(){
+            location.reload();
+        });
+    }
+    function demander_valeur(id) {
+        var valeur = parseInt(prompt("Veuillez saisir le temps restant (en minutes)"))
         $.get("corriger_decompte/" + id + "/" + valeur).done(function(){
             location.reload();
         });

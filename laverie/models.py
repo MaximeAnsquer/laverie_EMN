@@ -1,31 +1,43 @@
+from django.utils import timezone
 from django.db import models
 
 
 class Appareil(models.Model):
-    temps_max = models.IntegerField(default=50)
-    temps_restant = models.IntegerField(default=0)
+    duree = models.IntegerField(default=50)
+    heure_fin = models.DateTimeField(default=timezone.now)
+    temps_restant = models.DurationField(default=timezone.timedelta())
     interesses = models.IntegerField(default=0)
     libre = models.BooleanField(default=True)
     TYPES = (
         ('machine', 'Machine à laver'),
         ('seche_linge', 'Sèche linge'),
     )
-    type = models.CharField(max_length=20, choices=TYPES)
-    compteur_actif = models.BooleanField(default=False)
+    type = models.CharField(max_length=20, choices=TYPES, default='machine')
 
     def __str__(self):
         return "%s %s" %(self.type, self.id)
-
-    def est_libre(self):
-        self.libre = self.temps_restant == 0
-        self.save()
-        return self.libre
 
     def add_interesse(self):
         self.interesses += 1
 
     def remove_interesse(self):
         self.interesses -= 1
+
+    def actualiser(self):
+        if not self.libre:
+            temps_restant = self.temps_restant = self.heure_fin - timezone.now()
+            if temps_restant.days >= 0:
+                self.temps_restant = temps_restant
+            else:
+                self.libre = True
+                self.temps_restant = timezone.timedelta()
+            self.save()
+
+    def get_minutes_restantes(self):
+        return (10+self.temps_restant.seconds)//60
+
+
+
 
 
 

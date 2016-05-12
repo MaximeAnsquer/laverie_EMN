@@ -1,5 +1,7 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
+<h1>Super gestionnaire de laverie trop cool</h1>
+
 <h2>Nombre de machines libres : {{ nb_machines_libres }} </h2>
 <h2>Nombre de sèche-linges libres :  {{ nb_seche_linges_libres }} </h2>
 
@@ -7,16 +9,16 @@
     {% for appareil in appareils %}
         <li>
             <h3>{{ appareil }}</h3>
-            {% if appareil.est_libre %}
+            {% if appareil.libre %}
                 Libre
                 <button onclick="lancer_decompte({{ appareil.id }})">Lancer le décompte</button>
             {% else %}
-                Temps restant : {{ appareil.temps_restant }}
+                Temps restant : {{ appareil.get_minutes_restantes }} minutes
             {% endif %}
 
             <button onclick="apparition_formulaire({{ appareil.id }})">Corriger</button>
             <div id="corriger_{{ appareil.id }}" style="display: none">
-                <input id="valeur_{{ appareil.id }}" type="number" min="0" max="{{ appareil.temps_max }}"/>
+                <input id="valeur_{{ appareil.id }}" type="number" min="0" max="{{ appareil.duree }}"/>
                 <button onclick="corriger_compteur({{ appareil.id }})">Valider</button>
             </div>
             {% if appareil.interesses == 1 %}
@@ -65,5 +67,5 @@
     function refresh() {
         $('body').load('')
     }
-    setTimeout("refresh()",10000);
+    setTimeout("refresh()",61000);
 </script>

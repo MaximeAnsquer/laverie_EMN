@@ -45,6 +45,9 @@ class Appareil(models.Model):
     def get_minutes_restantes(self):
         return (60+self.temps_restant.seconds)//60
 
+    def reste_longtemps(self):
+        return self.get_minutes_restantes() > 15
+
 
 class Utilisation(models.Model):
     appareil = models.ForeignKey(Appareil, on_delete=models.CASCADE)

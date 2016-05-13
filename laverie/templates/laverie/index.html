@@ -19,156 +19,96 @@
     <h4>Machines libres : {{ nb_machines_libres }} </h4>
     <h4>Sèche-linges libres :  {{ nb_seche_linges_libres }} </h4>
 
+    <table class="table table-responsive table-striped">
+        <tbody>
+        {% for appareil in appareils %}
 
-    {% for appareil in appareils %}
-        <div class="row text-center">
+            <tr>
+                <!-- Nom -->
+                <td>
+                    <span class = "panel-title">{{ appareil }}</span>
+                </td>
 
-            <div class = "panel panel-primary">
-                <div class = "panel-heading">
-                    <h3 class = "panel-title">{{ appareil }}</h3>
-                </div>
-
-                <div class = "panel-body">
-                    <!-- Statut -->
+                <!-- Statut -->
+                <td>
                     {% if appareil.libre %}
-                        <div class="alert btn btn-success btn-lg col-lg-1 col-xs-8">
+                        <div class="btn btn-success">
                             <div class="glyphicon glyphicon-ok"> Libre</div>
                         </div>
                     {% else %}
                         {% if appareil.reste_longtemps %}
-                            <div class="alert btn-danger btn-lg col-lg-1 col-xs-8">
-                                <div class="glyphicon glyphicon-time"> {{ appareil.get_minutes_restantes }} minutes</div>
+                            <div class="btn btn-danger">
+                                <div class="glyphicon glyphicon-hourglass"> {{ appareil.get_minutes_restantes }} minutes</div>
                             </div>
                         {% else %}
-                            <div class="alert btn-warning btn-lg btn-lg col-lg-1 col-xs-8">
-                                <div class="glyphicon glyphicon-time"> {{ appareil.get_minutes_restantes }} minutes</div>
+                            <div class="btn btn-warning">
+                                <div class="glyphicon glyphicon-hourglass"> {{ appareil.get_minutes_restantes }} minutes</div>
                             </div>
                         {% endif %}
                     {% endif %}
+                </td>
 
-                    <!--Démarrer le compteur -->
+                <!-- Bouton démarrer -->
+                <td>
                     {% if appareil.libre %}
-                        <div col-lg-1 col-xs-4>
-                            <button type="button" class="btn btn-lg btn-primary glyphicon glyphicon-play "
-                                    onclick="lancer_decompte({{ appareil.id }})">
-                            </button>
-                        </div>
-                    {% else %}
-                        <div col-lg-1 col-xs-4>
-                            <button type="button" class="btn btn-lg btn-primary glyphicon glyphicon-repeat "
-                                    onclick="lancer_decompte({{ appareil.id }})">
-                            </button>
-                        </div>
-                    {% endif %}
-
-                    <div class="clearfix visible-xs"></div>
-
-                    <!-- Nombre d'intéressés -->
-                    <div class="btn-lg btn-lg col-lg-1 col-xs-3">
-                        <div class="glyphicon glyphicon-user"> {{  appareil.interesses }}</div>
-                    </div>
-
-                    <!--Bouton intéressé -->
-                    <button type="button" class="btn btn-lg btn-info btn-lg col-lg-1 col-xs-3"
-                            onclick="interesse({{ appareil.id }})">
-                        <div class="glyphicon glyphicon-circle-arrow-right"></div>
-                    </button>
-
-                    <!-- Bouton désintéressé -->
-                    {% if appareil.interesses != 0 %}
-                        <button type="button" class="btn btn-lg btn-info btn-lg col-lg-1 col-xs-3"
-                                onclick="plus_interesse({{ appareil.id }})">
-                            <div class="glyphicon glyphicon-thumbs-up"></div>
+                        <button type="button" class="btn btn-primary glyphicon glyphicon-play "
+                                onclick="lancer_decompte({{ appareil.id }})">
                         </button>
                     {% endif %}
+                </td>
 
-                    <!-- Bouton éditer -->
+                <!-- Nombre d'intéressées -->
+                <td>
+                    <h4>
+                        <div class="glyphicon glyphicon-user"> {{  appareil.interesses }}</div>
+                    </h4>
+                </td>
+
+                <!-- Bouton options -->
+                <td>
+                    <button type = "button"
+                            data-toggle = "collapse"
+                            class="btn btn-default glyphicon glyphicon-cog"
+                            data-target="#options_{{ appareil.id }}">
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Options -->
+            <tr class="collapse" id="options_{{ appareil.id }}">
+                <td></td>
+                <!-- Bouton intéressé -->
+                <td>
+                    <button type="button" class="btn btn-default"
+                            onclick="interesse({{ appareil.id }})">
+                        <div class="glyphicon glyphicon-share-alt"></div>
+                    </button>
+                </td>
+
+                <!-- Bouton plus intéressé -->
+                <td>
+                    <button type="button" class="btn btn-default"
+                            onclick="plus_interesse({{ appareil.id }})">
+                        <div class="glyphicon glyphicon-thumbs-up"></div>
+                    </button>
+                </td>
+
+                <!-- Bouton modifier -->
+                <td>
                     <button type="button" onclick="demander_valeur({{ appareil.id }})"
-                            class="btn btn-lg btn-warning btn-lg col-lg-1 col-xs-3" >
+                            class="btn btn-warning" >
                         <div class="glyphicon glyphicon-edit"></div>
                     </button>
-                </div>
-            </div>
-
-        </div>
-    {% endfor %}
-
-
-    <!--
-
-
-    <table class="table table-responsive text-center">
-        <tbody>
-        {% for appareil in appareils %}
-            <tr>
-                <div class="col-lg-6 col-xs-12">
-                    <td class="btn-lg">{{ appareil }}</td>
-                    <td>
-                        {% if appareil.libre %}
-                            <div class="alert btn-success btn-lg">
-                                <div class="glyphicon glyphicon-ok"></div>
-                                <div>Libre</div>
-                            </div>
-                        {% else %}
-                            {% if appareil.reste_longtemps %}
-                                <div class="alert btn-danger btn-lg">
-                                    <div class="glyphicon glyphicon-time"></div>
-                                    <div>{{ appareil.get_minutes_restantes }} minutes</div>
-                                </div>
-                            {% else %}
-                                <div class="alert btn-warning btn-lg">
-                                    <div class="glyphicon glyphicon-time"></div>
-                                    <div>{{ appareil.get_minutes_restantes }} minutes</div>
-                                </div>
-                            {% endif %}
-                        {% endif %}
-                    </td>
-                    {% if appareil.libre %}
-                        <td>
-                            <button type="button" class="btn btn-lg btn-primary glyphicon glyphicon-play" onclick="lancer_decompte({{ appareil.id }})"></button>
-                        </td>
-                    {% else %}
-                        <td>
-                            <button type="button" class="btn btn-lg btn-primary glyphicon glyphicon-repeat" onclick="lancer_decompte({{ appareil.id }})"></button>
-                        </td>
-                    {% endif %}
-                </div>
-                <div class="col-lg-6 col-xs-12">
-                    <td class="btn-lg">
-                        {{ appareil.interesses }}
-                        <div class="glyphicon glyphicon-user"></div>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-lg btn-info" onclick="interesse({{ appareil.id }})">
-                            <div class="glyphicon glyphicon-circle-arrow-right"></div>
-                        </button>
-                    </td>
-                    <td>
-                        {% if appareil.interesses != 0 %}
-                            <button type="button" class="btn btn-lg btn-info" onclick="plus_interesse({{ appareil.id }})">
-                                <div class="glyphicon glyphicon-thumbs-up"></div>
-                            </button>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <button type="button" onclick="demander_valeur({{ appareil.id }})" class="btn btn-lg btn-warning" >
-                            <div class="glyphicon glyphicon-edit"></div>
-                        </button>
-
-                        <div id="corriger_{{ appareil.id }}" style="display: none">
-                            <input id="valeur_{{ appareil.id }}" type="number" min="0" max="{{ appareil.duree }}"/>
-                            <button onclick="corriger_compteur({{ appareil.id }})">Valider</button>
-                        </div>
-
-                    </td>
-                </div>
+                </td>
+                <td></td>
             </tr>
-        {% endfor %}
 
+        {% endfor %}
         </tbody>
     </table>
 
-    -->
+
+
 
 
 </div>

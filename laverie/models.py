@@ -26,7 +26,8 @@ class Appareil(models.Model):
         self.save()
 
     def remove_interesse(self):
-        self.interesses -= 1
+        if self.interesses > 0:
+            self.interesses -= 1
         self.save()
 
     def actualiser(self):

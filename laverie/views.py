@@ -51,3 +51,23 @@ def plus_interesse(request, id):
     appareil.remove_interesse()
     return index(request)
 
+
+def statistiques(request):
+    all_utilisations = Utilisation.objects.all()
+    total = all_utilisations.count()
+    jours_utilisations = []
+    pourcentage_par_jour = []
+    for utilisation in all_utilisations:
+        jours_utilisations.append(utilisation.date.weekday())
+    for jour in range(7):
+        pourcentage = len([j for j in jours_utilisations if j == jour])/total
+        pourcentage_par_jour.append(pourcentage)
+    lundi = pourcentage_par_jour[0]*100
+    mardi = pourcentage_par_jour[1]*100
+    mercredi = pourcentage_par_jour[2]*100
+    jeudi = pourcentage_par_jour[3]*100
+    vendredi = pourcentage_par_jour[4]*100
+    samedi = pourcentage_par_jour[5]*100
+    dimanche = pourcentage_par_jour[6]*100
+    return render(request, 'laverie/statistiques.html', locals())
+

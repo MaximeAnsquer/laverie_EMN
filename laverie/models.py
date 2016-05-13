@@ -18,7 +18,7 @@ class Appareil(models.Model):
         if self.type == 'machine':
             type = 'Machine à laver'
         else:
-            type = 'Sèche linger'
+            type = 'Sèche linge'
         return type + " " + str(self.id)
 
     def add_interesse(self):

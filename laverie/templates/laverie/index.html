@@ -32,16 +32,16 @@
                     <!-- Statut -->
                     {% if appareil.libre %}
                         <div class="alert btn btn-success btn-lg col-lg-1 col-xs-8">
-                            <div>Libre</div>
+                            <div class="glyphicon glyphicon-ok"> Libre</div>
                         </div>
                     {% else %}
                         {% if appareil.reste_longtemps %}
                             <div class="alert btn-danger btn-lg col-lg-1 col-xs-8">
-                                <div>{{ appareil.get_minutes_restantes }} minutes</div>
+                                <div class="glyphicon glyphicon-time"> {{ appareil.get_minutes_restantes }} minutes</div>
                             </div>
                         {% else %}
                             <div class="alert btn-warning btn-lg btn-lg col-lg-1 col-xs-8">
-                                <div>{{ appareil.get_minutes_restantes }} minutes</div>
+                                <div class="glyphicon glyphicon-time"> {{ appareil.get_minutes_restantes }} minutes</div>
                             </div>
                         {% endif %}
                     {% endif %}
@@ -65,7 +65,7 @@
 
                     <!-- Nombre d'intéressés -->
                     <div class="btn-lg btn-lg col-lg-1 col-xs-3">
-                         <div class="glyphicon glyphicon-user"> {{ appareil.interesses }}</div>
+                        <div class="glyphicon glyphicon-user"> {{  appareil.interesses }}</div>
                     </div>
 
                     <!--Bouton intéressé -->

@@ -14,89 +14,148 @@
 
 <div class="container" >
 
-    <div class="col-xs-12">
+    <h1>Super gestionnaire de laverie trop cool</h1>
 
-        <h1>Super gestionnaire de laverie trop cool</h1>
-
-        <h2>Nombre de machines libres : {{ nb_machines_libres }} </h2>
-        <h2>Nombre de sèche-linges libres :  {{ nb_seche_linges_libres }} </h2>
+    <h2>Nombre de machines libres : {{ nb_machines_libres }} </h2>
+    <h2>Nombre de sèche-linges libres :  {{ nb_seche_linges_libres }} </h2>
 
 
+    {% for appareil in appareils %}
+        <div class="row text-center" style="margin-bottom: 20px">
 
-        <table class="table table-striped text-center">
-            <tbody>
-            {% for appareil in appareils %}
-                <tr>
+            <div class="clearfix"></div>
+
+            <!-- Appareil -->
+            <h4>
+                <div >{{ appareil }}</div>
+            </h4>
+
+            <!-- Vide -->
+            <!-- <div class="col-xs-4"></div> -->
+
+            <!-- Statut -->
+            {% if appareil.libre %}
+                <div class="alert btn-success btn-lg col-lg-1 col-xs-8">
+                    <div>Libre</div>
+                </div>
+            {% else %}
+                {% if appareil.reste_longtemps %}
+                    <div class="alert btn-danger btn-lg col-lg-1 col-xs-8">
+                        <div>{{ appareil.get_minutes_restantes }} minutes</div>
+                    </div>
+                {% else %}
+                    <div class="alert btn-warning btn-lg btn-lg col-lg-1 col-xs-8">
+                        <div>{{ appareil.get_minutes_restantes }} minutes</div>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            <!--Démarrer le compteur -->
+            {% if appareil.libre %}
+                <div col-lg-1 col-xs-4>
+                    <button type="button" class="btn btn-lg btn-primary glyphicon glyphicon-play "
+                            onclick="lancer_decompte({{ appareil.id }})">
+                    </button>
+                </div>
+            {% else %}
+                <div col-lg-1 col-xs-4>
+                    <button type="button" class="btn btn-lg btn-primary glyphicon glyphicon-repeat "
+                            onclick="lancer_decompte({{ appareil.id }})">
+                    </button>
+                </div>
+            {% endif %}
+
+            <div class="clearfix"></div>
+
+            <!-- Nombre d'intéressés -->
+            <div class="btn-lg btn-lg col-lg-1 col-xs-3">
+                {{ appareil.interesses }}
+                <div class="glyphicon glyphicon-user"></div>
+            </div>
+
+            <!--Bouton intéressé -->
+            <button type="button" class="btn btn-lg btn-info btn-lg col-lg-1 col-xs-3"
+                    onclick="interesse({{ appareil.id }})">
+                <div class="glyphicon glyphicon-circle-arrow-right"></div>
+            </button>
+
+            <!-- Bouton désintéressé -->
+            {% if appareil.interesses != 0 %}
+                <button type="button" class="btn btn-lg btn-info btn-lg col-lg-1 col-xs-3"
+                        onclick="plus_interesse({{ appareil.id }})">
+                    <div class="glyphicon glyphicon-thumbs-up"></div>
+                </button>
+            {% endif %}
+
+            <!-- Bouton éditer -->
+            <button type="button" onclick="demander_valeur({{ appareil.id }})"
+                    class="btn btn-lg btn-warning btn-lg col-lg-1 col-xs-3" >
+                <div class="glyphicon glyphicon-edit"></div>
+            </button>
+
+        </div>
+    {% endfor %}
+
+
+
+
+    <table class="table table-responsive text-center">
+        <tbody>
+        {% for appareil in appareils %}
+            <tr>
+                <div class="col-lg-6 col-xs-12">
                     <td class="btn-lg">{{ appareil }}</td>
                     <td>
                         {% if appareil.libre %}
-                            <p class="alert btn-success btn-lg">Libre</p>
+                            <div class="alert btn-success btn-lg">
+                                <div class="glyphicon glyphicon-ok"></div>
+                                <div>Libre</div>
+                            </div>
                         {% else %}
                             {% if appareil.reste_longtemps %}
-                                <p class="alert btn-danger btn-lg">
-                                    Temps restant : {{ appareil.get_minutes_restantes }} minutes
-                                </p>
+                                <div class="alert btn-danger btn-lg">
+                                    <div class="glyphicon glyphicon-time"></div>
+                                    <div>{{ appareil.get_minutes_restantes }} minutes</div>
+                                </div>
                             {% else %}
-                                <p class="alert btn-warning btn-lg">
-                                    Temps restant : {{ appareil.get_minutes_restantes }} minutes
-                                </p>
+                                <div class="alert btn-warning btn-lg">
+                                    <div class="glyphicon glyphicon-time"></div>
+                                    <div>{{ appareil.get_minutes_restantes }} minutes</div>
+                                </div>
                             {% endif %}
                         {% endif %}
                     </td>
-                    <td>
-                        <button type="button" class="btn btn-lg btn-primary" onclick="lancer_decompte({{ appareil.id }})">Lancer le décompte</button>
-                    </td>
+                    {% if appareil.libre %}
+                        <td>
+                            <button type="button" class="btn btn-lg btn-primary glyphicon glyphicon-play" onclick="lancer_decompte({{ appareil.id }})"></button>
+                        </td>
+                    {% else %}
+                        <td>
+                            <button type="button" class="btn btn-lg btn-primary glyphicon glyphicon-repeat" onclick="lancer_decompte({{ appareil.id }})"></button>
+                        </td>
+                    {% endif %}
+                </div>
+                <div class="col-lg-6 col-xs-12">
                     <td class="btn-lg">
-                        {% if appareil.interesses == 1 %}
-                            1 intéressé
-                        {% elif appareil.interesses > 1 %}
-                            {{ appareil.interesses }} intéressés
-                        {% endif %}
+                        {{ appareil.interesses }}
+                        <div class="glyphicon glyphicon-user"></div>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-lg btn-info" onclick="interesse({{ appareil.id }})">Intéressé</button>
+                        <button type="button" class="btn btn-lg btn-info" onclick="interesse({{ appareil.id }})">
+                            <div class="glyphicon glyphicon-circle-arrow-right"></div>
+                        </button>
                     </td>
                     <td>
                         {% if appareil.interesses != 0 %}
-                            <button type="button" class="btn btn-lg btn-info" onclick="plus_interesse({{ appareil.id }})">Plus intéressé</button>
+                            <button type="button" class="btn btn-lg btn-info" onclick="plus_interesse({{ appareil.id }})">
+                                <div class="glyphicon glyphicon-thumbs-up"></div>
+                            </button>
                         {% endif %}
                     </td>
                     <td>
-                        <button type="button" onclick="demander_valeur({{ appareil.id }})" class="btn btn-warning" >Corriger</button>
-                        <!-- <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#popUpWindow">Corriger</button> -->
-
-                        <div class="modal modal fade" id="popUpWindow" >
-                            <div class="modal-dialog" style="width: 100%; height: 100%;  margin: 0;  padding: 0;">
-                                <div class="modal-content" style="height: auto;  min-height: 100%;  border-radius: 0;">
-
-                                    <!-- header -->
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h3 class="modal-title">Corriger le temps restant</h3>
-                                    </div>
-
-                                    <!-- body (form) -->
-                                    <div class="modal-body">
-                                        <form role="form">
-                                            <div class="form-group">
-                                                <input id="valeur_{{ appareil.id }}"
-                                                       autofocus
-                                                       type="number" min="0" max="{{ appareil.duree }}"
-                                                       placeholder="Temps restant (en minutes)"
-                                                       style="width:100%; height: 300px">
-                                            </div>
-                                        </form>
-                                    </div>
-
-                                    <!-- button -->
-                                    <div class="modal-footer">
-                                        <button onclick="corriger_compteur({{ appareil.id }})" class="btn btn-lg btn-primary btn-block">Valider</button>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        </div>
+                        <button type="button" onclick="demander_valeur({{ appareil.id }})" class="btn btn-lg btn-warning" >
+                            <div class="glyphicon glyphicon-edit"></div>
+                        </button>
 
                         <div id="corriger_{{ appareil.id }}" style="display: none">
                             <input id="valeur_{{ appareil.id }}" type="number" min="0" max="{{ appareil.duree }}"/>
@@ -104,47 +163,14 @@
                         </div>
 
                     </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-        <dl>
-            {% for appareil in appareils %}
-                <dt>
-                <h3>{{ appareil }}</h3>
-                {% if appareil.libre %}
-                    <p class="text-success">
-                        Libre
-                    </p>
-                    <button onclick="lancer_decompte({{ appareil.id }})">Lancer le décompte</button>
-                {% else %}
-                    <p class="text-danger">
-                        Temps restant : {{ appareil.get_minutes_restantes }} minutes
-                    </p>
-                {% endif %}
-
-                <button onclick="apparition_formulaire({{ appareil.id }})">Corriger</button>
-                <div id="corriger_{{ appareil.id }}" style="display: none">
-                    <input id="valeur_{{ appareil.id }}" type="number" min="0" max="{{ appareil.duree }}"/>
-                    <button onclick="corriger_compteur({{ appareil.id }})">Valider</button>
                 </div>
-                {% if appareil.interesses == 1 %}
-                    <div>
-                        1 personne intéressée
-                    </div>
-                {% elif appareil.interesses > 1 %}
-                    {{ appareil.interesses }} personnes intéressées
-                {% endif %}
+            </tr>
+        {% endfor %}
 
-                <button onclick="interesse({{ appareil.id }})">Intéressé</button>
-                {% if appareil.interesses != 0 %}
-                    <button onclick="plus_interesse({{ appareil.id }})">Plus intéressé</button>
-                {% endif %}
-                </dt>
-            {% endfor %}
-        </dl>
-    </div>
+        </tbody>
+    </table>
+
+
 </div>
 
 </body>
@@ -168,9 +194,11 @@
     }
     function demander_valeur(id) {
         var valeur = parseInt(prompt("Veuillez saisir le temps restant (en minutes)"))
-        $.get("corriger_decompte/" + id + "/" + valeur).done(function(){
-            location.reload();
-        });
+        if (!isNaN(valeur)) {
+            $.get("corriger_decompte/" + id + "/" + valeur).done(function(){
+                location.reload();
+            });
+        }
     }
     function interesse(id) {
         $.get("interesse/" + id).done(function(){

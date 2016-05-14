@@ -18,31 +18,75 @@
 <div class="container">
     <h1>Voici des supers statistiques</h1>
 
-    <canvas id="myChart" width="400" height="400"></canvas>
-    <script>
-        var ctx = document.getElementById("myChart");
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
-                datasets: [{
-                    label: "Pourcentage d'utilisation",
-                    data: [{{ lundi }}, {{ mardi }}, {{ mercredi }}, {{ jeudi }}, {{ vendredi }}, {{ samedi }}, {{ dimanche }}]
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero:true
-                        }
-                    }]
-                }
-            }
-        });
-    </script>
+    <div class="container" style="text-align:center">
 
-    <a type="button" class="btn btn-default btn-block" href="/laverie">Retour à la page principale</a>
+        <h2>Semaine</h2>
+
+        <canvas id="chartSemaine"></canvas>
+        <script>
+            var ctx = document.getElementById("chartSemaine");
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+                    datasets: [{
+                        label: "Pourcentage d'utilisation",
+                        backgroundColor: "#36A2EB",
+                        borderWidth: 1,
+                        data: [{{ lundi }}, {{ mardi }}, {{ mercredi }}, {{ jeudi }}, {{ vendredi }}, {{ samedi }}, {{ dimanche }}]
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero:true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+
+        {% for jour, valeurs in valeurs_par_jour %}
+
+            <h2>{{ jour }}</h2>
+
+            <canvas id="chart_{{ jour }}"></canvas>
+            <script>
+                var ctx = document.getElementById("chart_{{ jour }}");
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ["0h-2h", "2h-4h", "4h-6h", "6h-8h", "8h-10h", "10h-12h", "12h-14h",
+                            "14h-16h", "16h-18h", "18h-20h", "20h-22h", "22h-23h59"],
+                        datasets: [{
+                            label: "Utilisations",
+                            backgroundColor: "#36A2EB",
+                            borderWidth: 1,
+                            data: [
+                                {% for valeur in valeurs %}
+                                    "{{ valeur }}",
+                                {% endfor %}
+                            ]
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                }
+                            }]
+                        }
+                    }
+                });
+            </script>
+
+        {% endfor %}
+
+        <a type="button" class="btn btn-default btn-block" href="/laverie">Retour à la page principale</a>
+    </div>
 </div>
 </body>
 

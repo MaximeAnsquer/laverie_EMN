@@ -55,19 +55,34 @@ def plus_interesse(request, id):
 def statistiques(request):
     all_utilisations = Utilisation.objects.all()
     total = all_utilisations.count()
-    jours_utilisations = []
+    utilisations = []
     pourcentage_par_jour = []
     for utilisation in all_utilisations:
-        jours_utilisations.append(utilisation.date.weekday())
+        utilisations.append(utilisation.date)
     for jour in range(7):
-        pourcentage = len([j for j in jours_utilisations if j == jour])/total
+        pourcentage = len([u for u in utilisations if u.weekday() == jour])/total
         pourcentage_par_jour.append(pourcentage)
-    lundi = pourcentage_par_jour[0]*100
-    mardi = pourcentage_par_jour[1]*100
-    mercredi = pourcentage_par_jour[2]*100
-    jeudi = pourcentage_par_jour[3]*100
-    vendredi = pourcentage_par_jour[4]*100
-    samedi = pourcentage_par_jour[5]*100
-    dimanche = pourcentage_par_jour[6]*100
+    lundi = int(pourcentage_par_jour[0]*100)
+    mardi = int(pourcentage_par_jour[1]*100)
+    mercredi = int(pourcentage_par_jour[2]*100)
+    jeudi = int(pourcentage_par_jour[3]*100)
+    vendredi = int(pourcentage_par_jour[4]*100)
+    samedi = int(pourcentage_par_jour[5]*100)
+    dimanche = int(pourcentage_par_jour[6]*100)
+
+    string_jours = ["Lundi","Mardi","Mecredi","Jeudi","Vendredi","Samedi","Dimanche"]
+
+    liste_de_liste_de_valeurs = []
+
+    for jour in range(7):
+        liste_de_valeurs = []
+        for heure in range(12):
+            liste_de_valeurs.append(len([u for u in utilisations
+                                         if u.weekday() == jour and u.hour == 2*heure]))
+        liste_de_liste_de_valeurs.append(liste_de_valeurs)
+
+        valeurs_par_jour = zip(string_jours, liste_de_liste_de_valeurs)
+        print(liste_de_liste_de_valeurs)
+
     return render(request, 'laverie/statistiques.html', locals())
 

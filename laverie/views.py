@@ -1,6 +1,10 @@
 from django.utils import timezone
 from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from laverie.models import Appareil, Utilisation
+from laverie.serializers import AppareilSerializer, UtilisationSerializer
 
 
 def index(request):
@@ -85,4 +89,27 @@ def statistiques(request):
         print(liste_de_liste_de_valeurs)
 
     return render(request, 'laverie/statistiques.html', locals())
+
+
+class AppareilList(APIView):
+
+    def get(self, request):
+        appareils = Appareil.objects.all()
+        serializer = AppareilSerializer(appareils, many=True)
+        return Response(serializer.data)
+
+    def post(self):
+        pass
+
+
+class UtilisationList(APIView):
+
+    def get(self, request):
+        utilisations = Utilisation.objects.all()
+        serializer = UtilisationSerializer(utilisations, many=True)
+        return Response(serializer.data)
+
+    def post(self):
+        pass
+
 

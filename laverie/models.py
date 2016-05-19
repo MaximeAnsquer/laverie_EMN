@@ -1,3 +1,4 @@
+# coding: utf-8
 from django.utils import timezone
 from django.db import models
 
@@ -5,7 +6,7 @@ from django.db import models
 class Appareil(models.Model):
     duree = models.IntegerField(default=50)
     heure_fin = models.DateTimeField(default=timezone.now)
-    temps_restant = models.DurationField(default=timezone.timedelta(),null=True)
+    temps_restant = models.DurationField(default=timezone.timedelta(), null=True)
     interesses = models.IntegerField(default=0)
     libre = models.BooleanField(default=True)
     TYPES = (

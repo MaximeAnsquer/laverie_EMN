@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'laverie.apps.LaverieConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE_CLASSES = [

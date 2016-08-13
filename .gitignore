@@ -85,6 +85,7 @@ celerybeat-schedule
 # virtualenv
 venv/
 ENV/
+laverie_env/
 
 # Spyder project settings
 .spyderproject
@@ -99,3 +100,4 @@ ENV/
 *.iml
 out
 gen
+Supprimerait laverie_env/

@@ -18,18 +18,13 @@ def index(request):
 
 
 def lancer_decompte(request, id):
-    print("Lancement du decompte " + str(id))
     appareil = Appareil.objects.get(id=id)
     nouvelle_utilisation = Utilisation(appareil=appareil)
     nouvelle_utilisation.save()
-    print("Heure actuelle : " + str(timezone.now()))
-    print("Duree de l'appareil : " + str(appareil.duree))
     appareil.heure_fin = timezone.now() + timezone.timedelta(minutes=appareil.duree)
     appareil.libre = False
     appareil.save()
-    print("Heure de fin : " + str(appareil.heure_fin))
     appareil.actualiser()
-    print("Temps restant : " + str(appareil.temps_restant))
     return index(request)
 
 
@@ -74,7 +69,7 @@ def statistiques(request):
     samedi = int(pourcentage_par_jour[5]*100)
     dimanche = int(pourcentage_par_jour[6]*100)
 
-    string_jours = ["Lundi","Mardi","Mecredi","Jeudi","Vendredi","Samedi","Dimanche"]
+    string_jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 
     liste_de_liste_de_valeurs = []
 
@@ -86,7 +81,6 @@ def statistiques(request):
         liste_de_liste_de_valeurs.append(liste_de_valeurs)
 
         valeurs_par_jour = zip(string_jours, liste_de_liste_de_valeurs)
-        print(liste_de_liste_de_valeurs)
 
     return render(request, 'laverie/statistiques.html', locals())
 

@@ -59,7 +59,10 @@ def statistiques(request):
     for utilisation in all_utilisations:
         utilisations.append(utilisation.date)
     for jour in range(7):
-        pourcentage = len([u for u in utilisations if u.weekday() == jour])/total if total != 0 else 0
+        if total != 0:
+            pourcentage = len([u for u in utilisations if u.weekday() == jour])/total
+        else:
+            pourcentage = 0
         pourcentage_par_jour.append(pourcentage)
     lundi = int(pourcentage_par_jour[0]*100)
     mardi = int(pourcentage_par_jour[1]*100)
